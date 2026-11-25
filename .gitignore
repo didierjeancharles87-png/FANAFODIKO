@@ -1,0 +1,57 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+staticfiles/
+media/
+private_media/
+.coverage
+htmlcov/
+node_modules/
+.next/
+out/
+npm-debug.log*
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Additional database files
+*.db
+*.sqlite
+*.db-journal
+
+# Secrets, keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Build and temporary files
+build/
+dist/
+*.log
+*.tmp
+*.bak
+*.tsbuildinfo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Local test artifacts and screenshots
+local-test-media/
+registration-check.png
+docs/final-security-audit-report.md
+docs/security-hardening-report.md
+docs/github-publication-audit.md

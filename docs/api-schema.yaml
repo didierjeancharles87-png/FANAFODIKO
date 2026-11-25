@@ -1,0 +1,7233 @@
+openapi: 3.0.3
+info:
+  title: FANAFODIKO API
+  version: 0.3.0
+  description: Socle API de FANAFODIKO
+paths:
+  /api/health/:
+    get:
+      operationId: api_health_retrieve
+      summary: Vérifier la disponibilité de l’API
+      tags:
+      - Système
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/accounts/patient/addresses/:
+    get:
+      operationId: api_v1_accounts_patient_addresses_list
+      summary: Lister ses adresses de retrait
+      tags:
+      - Patients
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuyerAddress'
+          description: ''
+    post:
+      operationId: api_v1_accounts_patient_addresses_create
+      summary: Ajouter une adresse de retrait
+      tags:
+      - Patients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyerAddressRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuyerAddressRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerAddressRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerAddress'
+          description: ''
+  /api/v1/accounts/patient/addresses/{id}/:
+    get:
+      operationId: api_v1_accounts_patient_addresses_retrieve
+      summary: Consulter une adresse de retrait
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Patients
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerAddress'
+          description: ''
+    patch:
+      operationId: api_v1_accounts_patient_addresses_partial_update
+      summary: Modifier une adresse de retrait
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Patients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuyerAddressRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBuyerAddressRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBuyerAddressRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerAddress'
+          description: ''
+    delete:
+      operationId: api_v1_accounts_patient_addresses_destroy
+      summary: Supprimer logiquement une adresse de retrait
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Patients
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/accounts/patient/addresses/{id}/primary/:
+    post:
+      operationId: api_v1_accounts_patient_addresses_primary_create
+      summary: Définir l'adresse de retrait principale
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Patients
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerAddress'
+          description: ''
+  /api/v1/accounts/patient/profile/:
+    get:
+      operationId: api_v1_accounts_patient_profile_retrieve
+      summary: Lire son profil patient
+      tags:
+      - Patients
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientProfile'
+          description: ''
+    patch:
+      operationId: api_v1_accounts_patient_profile_partial_update
+      summary: Modifier son profil patient
+      tags:
+      - Patients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPatientProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPatientProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPatientProfileRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientProfile'
+          description: ''
+  /api/v1/accounts/professional-verifications/:
+    get:
+      operationId: api_v1_accounts_professional_verifications_list
+      summary: Lister ses demandes de validation professionnelle
+      tags:
+      - Comptes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfessionalVerificationRequest'
+          description: ''
+    post:
+      operationId: api_v1_accounts_professional_verifications_create
+      summary: Soumettre une demande de validation professionnelle
+      tags:
+      - Comptes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalVerificationRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalVerificationRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalVerificationRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalVerificationRequest'
+          description: ''
+  /api/v1/admin/accounts/:
+    get:
+      operationId: api_v1_admin_accounts_list
+      summary: Lister les comptes de la plateforme
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAccountListList'
+          description: ''
+  /api/v1/admin/dashboard/:
+    get:
+      operationId: api_v1_admin_dashboard_retrieve
+      summary: Consulter les indicateurs de la plateforme
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboard'
+          description: ''
+  /api/v1/admin/marketplace/moderation/:
+    get:
+      operationId: api_v1_admin_marketplace_moderation_list
+      summary: File de modération des produits
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnerProductList'
+          description: ''
+  /api/v1/admin/marketplace/moderation/products/:
+    get:
+      operationId: api_v1_admin_marketplace_moderation_products_list
+      summary: File de modération des produits
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnerProductList'
+          description: ''
+  /api/v1/admin/marketplace/price-history/{id}/:
+    get:
+      operationId: api_v1_admin_marketplace_price_history_list
+      summary: Historique des prix d’un produit (administration)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductPriceHistoryList'
+          description: ''
+  /api/v1/admin/marketplace/products/{id}/approve/:
+    post:
+      operationId: api_v1_admin_marketplace_products_approve_create
+      summary: Approuver un produit soumis
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/admin/marketplace/products/{id}/price-history/:
+    get:
+      operationId: api_v1_admin_marketplace_products_price_history_list
+      summary: Historique des prix d’un produit (administration)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductPriceHistoryList'
+          description: ''
+  /api/v1/admin/marketplace/products/{id}/reject/:
+    post:
+      operationId: api_v1_admin_marketplace_products_reject_create
+      summary: Refuser un produit soumis
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerationRejectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ModerationRejectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ModerationRejectRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/admin/marketplace/sellers/{id}/assign-owner/:
+    post:
+      operationId: api_v1_admin_marketplace_sellers_assign_owner_create
+      summary: Attribuer explicitement un vendeur existant à un compte partenaire
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerOwnerAssignmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SellerOwnerAssignmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerOwnerAssignmentRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOwner'
+          description: ''
+  /api/v1/admin/orders/:
+    get:
+      operationId: api_v1_admin_orders_list
+      summary: Superviser toutes les réservations
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/admin/professional-verifications/:
+    get:
+      operationId: api_v1_admin_professional_verifications_list
+      summary: Lister les demandes professionnelles
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProfessionalVerificationRequestList'
+          description: ''
+  /api/v1/admin/professional-verifications/{id}/review/:
+    post:
+      operationId: api_v1_admin_professional_verifications_review_create
+      summary: Examiner une demande professionnelle
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationReviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerificationReviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerificationReviewRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalVerificationRequest'
+          description: ''
+  /api/v1/auth/csrf/:
+    get:
+      operationId: api_v1_auth_csrf_retrieve
+      summary: Initialiser le cookie CSRF
+      tags:
+      - Authentification
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CsrfCookie'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: api_v1_auth_login_create
+      summary: Ouvrir une session professionnelle
+      tags:
+      - Authentification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalLoginRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: api_v1_auth_logout_create
+      summary: Fermer la session professionnelle
+      tags:
+      - Authentification
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/me/:
+    get:
+      operationId: api_v1_auth_me_retrieve
+      summary: Consulter la session actuelle
+      tags:
+      - Authentification
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+          description: ''
+  /api/v1/auth/register/:
+    post:
+      operationId: api_v1_auth_register_create
+      summary: Créer un compte professionnel
+      tags:
+      - Authentification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalRegistrationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalRegistrationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalRegistrationRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalProfile'
+          description: ''
+  /api/v1/auth/register-patient/:
+    post:
+      operationId: api_v1_auth_register_patient_create
+      summary: Créer un compte patient
+      tags:
+      - Patients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRegistrationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatientRegistrationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatientRegistrationRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientRegistrationResponse'
+          description: ''
+  /api/v1/cart/:
+    get:
+      operationId: api_v1_cart_retrieve
+      summary: Consulter son panier serveur
+      tags:
+      - Panier
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    post:
+      operationId: api_v1_cart_create
+      summary: Ajouter ou remplacer un article du panier
+      tags:
+      - Panier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartAddRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartAddRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartAddRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: api_v1_cart_destroy
+      summary: Vider son panier serveur
+      tags:
+      - Panier
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/cart/coupon/:
+    post:
+      operationId: api_v1_cart_coupon_create
+      summary: Appliquer un coupon au panier
+      tags:
+      - Panier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponApplyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CouponApplyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CouponApplyRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: api_v1_cart_coupon_destroy
+      summary: Retirer le coupon du panier
+      tags:
+      - Panier
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/cart/items/{id}/:
+    patch:
+      operationId: api_v1_cart_items_partial_update
+      summary: Modifier la quantité d’un article
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Panier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCartItemUpdateRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: api_v1_cart_items_destroy
+      summary: Retirer un article du panier
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Panier
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/marketplace/admin/options/:
+    get:
+      operationId: api_v1_marketplace_admin_options_retrieve
+      summary: Options d’administration du marketplace
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketplaceAdminOptions'
+          description: ''
+  /api/v1/marketplace/admin/products/:
+    get:
+      operationId: api_v1_marketplace_admin_products_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogProductAdminList'
+          description: ''
+    post:
+      operationId: api_v1_marketplace_admin_products_create
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CatalogProductAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CatalogProductAdminRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogProductAdminRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogProductAdmin'
+          description: ''
+  /api/v1/marketplace/admin/products/{id}/:
+    get:
+      operationId: api_v1_marketplace_admin_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog product.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogProductAdmin'
+          description: ''
+    patch:
+      operationId: api_v1_marketplace_admin_products_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog product.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogProductAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogProductAdminRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogProductAdminRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogProductAdmin'
+          description: ''
+    delete:
+      operationId: api_v1_marketplace_admin_products_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog product.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/marketplace/admin/products/{id}/image/:
+    get:
+      operationId: api_v1_marketplace_admin_products_image_retrieve
+      summary: Télécharger l’image principale d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Image principale du produit
+  /api/v1/marketplace/admin/sellers/:
+    get:
+      operationId: api_v1_marketplace_admin_sellers_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogSellerAdminList'
+          description: ''
+    post:
+      operationId: api_v1_marketplace_admin_sellers_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogSellerAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CatalogSellerAdminRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CatalogSellerAdminRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSellerAdmin'
+          description: ''
+  /api/v1/marketplace/admin/sellers/{id}/:
+    get:
+      operationId: api_v1_marketplace_admin_sellers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog seller.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSellerAdmin'
+          description: ''
+    patch:
+      operationId: api_v1_marketplace_admin_sellers_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog seller.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogSellerAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogSellerAdminRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCatalogSellerAdminRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSellerAdmin'
+          description: ''
+    delete:
+      operationId: api_v1_marketplace_admin_sellers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this catalog seller.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/marketplace/public/equipment/:
+    get:
+      operationId: api_v1_marketplace_public_equipment_retrieve
+      summary: Lister les matériels médicaux publics
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCatalogListResponse'
+          description: ''
+  /api/v1/marketplace/public/medicines/:
+    get:
+      operationId: api_v1_marketplace_public_medicines_retrieve
+      summary: Lister les médicaments publics
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCatalogListResponse'
+          description: ''
+  /api/v1/marketplace/public/products/{slug}/:
+    get:
+      operationId: api_v1_marketplace_public_products_retrieve
+      summary: Consulter une fiche produit publique
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCatalogProduct'
+          description: ''
+  /api/v1/marketplace/public/products/{slug}/image/:
+    get:
+      operationId: api_v1_marketplace_public_products_image_retrieve
+      summary: Télécharger l’image principale publique d’un produit
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Fichier image
+  /api/v1/marketplace/public/products/{slug}/images/{id}/:
+    get:
+      operationId: api_v1_marketplace_public_products_images_retrieve
+      summary: Télécharger une image de galerie publique
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Fichier image
+  /api/v1/marketplace/public/search/:
+    get:
+      operationId: api_v1_marketplace_public_search_retrieve
+      summary: Rechercher dans le catalogue public
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCatalogSearchResponse'
+          description: ''
+  /api/v1/notifications/:
+    get:
+      operationId: api_v1_notifications_list
+      summary: Lister ses notifications réelles
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/{id}/read/:
+    post:
+      operationId: api_v1_notifications_read_create
+      summary: Marquer une notification comme lue
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/preferences/:
+    get:
+      operationId: api_v1_notifications_preferences_retrieve
+      summary: Lire ses préférences WhatsApp
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    patch:
+      operationId: api_v1_notifications_preferences_partial_update
+      summary: Modifier le consentement aux liens WhatsApp
+      tags:
+      - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+  /api/v1/notifications/read-all/:
+    post:
+      operationId: api_v1_notifications_read_all_create
+      summary: Marquer toutes ses notifications comme lues
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+          description: ''
+  /api/v1/notifications/unread-count/:
+    get:
+      operationId: api_v1_notifications_unread_count_retrieve
+      summary: Nombre de notifications non lues
+      tags:
+      - Notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+          description: ''
+  /api/v1/orders/:
+    get:
+      operationId: api_v1_orders_list
+      summary: Lister ses réservations
+      tags:
+      - Commandes client
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+    post:
+      operationId: api_v1_orders_create
+      summary: Confirmer une réservation sans paiement en ligne
+      tags:
+      - Commandes client
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/orders/{id}/:
+    get:
+      operationId: api_v1_orders_retrieve
+      summary: Consulter une réservation client
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Commandes client
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/orders/{id}/cancel/:
+    post:
+      operationId: api_v1_orders_cancel_create
+      summary: Annuler sa réservation avant acceptation
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Commandes client
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/dashboard/:
+    get:
+      operationId: api_v1_partner_dashboard_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Indicateurs calculés sur le seul vendeur attribué
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: object
+                  orders:
+                    type: object
+                  unread_notifications:
+                    type: integer
+          description: ''
+  /api/v1/partner/orders/:
+    get:
+      operationId: api_v1_partner_orders_list
+      summary: Lister les commandes de son vendeur
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/:
+    get:
+      operationId: api_v1_partner_orders_retrieve
+      summary: Consulter une commande partenaire
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/accept/:
+    post:
+      operationId: api_v1_partner_orders_accept_create
+      summary: Changer le statut d’une commande
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/complete/:
+    post:
+      operationId: api_v1_partner_orders_complete_create
+      summary: Changer le statut d’une commande
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/mark-ready/:
+    post:
+      operationId: api_v1_partner_orders_mark_ready_create
+      summary: Changer le statut d’une commande
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/prepare/:
+    post:
+      operationId: api_v1_partner_orders_prepare_create
+      summary: Changer le statut d’une commande
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/orders/{id}/reject/:
+    post:
+      operationId: api_v1_partner_orders_reject_create
+      summary: Changer le statut d’une commande
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransitionNoteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/partner/products/:
+    get:
+      operationId: api_v1_partner_products_list
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Lister les produits de son vendeur
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnerProductList'
+          description: ''
+    post:
+      operationId: api_v1_partner_products_create
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Créer un produit pour son vendeur
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/partner/products/{id}/:
+    get:
+      operationId: api_v1_partner_products_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Consulter un produit de son vendeur
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+    put:
+      operationId: api_v1_partner_products_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerProductRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+    patch:
+      operationId: api_v1_partner_products_partial_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Modifier un produit de son vendeur
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+    delete:
+      operationId: api_v1_partner_products_destroy
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Archiver un produit de son vendeur
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/partner/products/{id}/availability/:
+    patch:
+      operationId: api_v1_partner_products_availability_partial_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Mettre à jour la disponibilité déclarative d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerAvailabilityUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerAvailabilityUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerAvailabilityUpdateRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/partner/products/{id}/image/:
+    get:
+      operationId: api_v1_partner_products_image_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Télécharger l’image principale historique d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Image principale historique du produit
+  /api/v1/partner/products/{id}/price-history/:
+    get:
+      operationId: api_v1_partner_products_price_history_list
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Historique des prix d’un produit partenaire
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductPriceHistoryList'
+          description: ''
+  /api/v1/partner/products/{id}/stock/:
+    patch:
+      operationId: api_v1_partner_products_stock_partial_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Mettre à jour le stock réel d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerStockUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerStockUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerStockUpdateRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/partner/products/{id}/submit/:
+    post:
+      operationId: api_v1_partner_products_submit_create
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Soumettre un produit à la modération
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/partner/products/{id}/submit-review/:
+    post:
+      operationId: api_v1_partner_products_submit_review_create
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Soumettre un produit à la modération
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProduct'
+          description: ''
+  /api/v1/partner/products/{product_pk}/images/:
+    get:
+      operationId: api_v1_partner_products_images_list
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Lister les images d’un produit partenaire
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnerProductImageList'
+          description: ''
+    post:
+      operationId: api_v1_partner_products_images_create
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Ajouter une image privée à un produit
+      parameters:
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProductImage'
+          description: ''
+  /api/v1/partner/products/{product_pk}/images/{id}/:
+    get:
+      operationId: api_v1_partner_products_images_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Consulter une image privée d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProductImage'
+          description: ''
+    put:
+      operationId: api_v1_partner_products_images_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerProductImageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProductImage'
+          description: ''
+    patch:
+      operationId: api_v1_partner_products_images_partial_update
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Modifier une image privée d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerProductImageRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProductImage'
+          description: ''
+    delete:
+      operationId: api_v1_partner_products_images_destroy
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Supprimer une image privée d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/partner/products/{product_pk}/images/{id}/file/:
+    get:
+      operationId: api_v1_partner_products_images_file_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Télécharger une image privée d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Image privée du produit
+  /api/v1/partner/products/{product_pk}/images/{id}/primary/:
+    post:
+      operationId: api_v1_partner_products_images_primary_create
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Définir l’image principale d’un produit
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: product_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProductImage'
+          description: ''
+  /api/v1/partner/sellers/{id}/:
+    get:
+      operationId: api_v1_partner_sellers_retrieve
+      description: 'Base des vues partenaires : identité du vendeur uniquement côté
+        serveur.'
+      summary: Consulter son vendeur attribué
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Espace partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerSeller'
+          description: ''
+  /api/v1/professionals/admin/documents/:
+    get:
+      operationId: api_v1_professionals_admin_documents_list
+      summary: Lister les justificatifs professionnels privés
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration professionnelle
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminProfessionalDocumentList'
+          description: ''
+  /api/v1/professionals/admin/documents/{id}/download/:
+    get:
+      operationId: api_v1_professionals_admin_documents_download_retrieve
+      summary: Télécharger un justificatif privé avec accès administrateur
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration professionnelle
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/professionals/admin/profiles/:
+    get:
+      operationId: api_v1_professionals_admin_profiles_list
+      summary: Lister les profils professionnels pour l’administration
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - Administration professionnelle
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminProfessionalProfileList'
+          description: ''
+  /api/v1/professionals/admin/profiles/{id}/reactivate/:
+    post:
+      operationId: api_v1_professionals_admin_profiles_reactivate_create
+      summary: Réactiver un compte professionnel suspendu
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration professionnelle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProfessionalProfile'
+          description: ''
+  /api/v1/professionals/admin/profiles/{id}/suspend/:
+    post:
+      operationId: api_v1_professionals_admin_profiles_suspend_create
+      summary: Suspendre un compte professionnel
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration professionnelle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalAccountStatusRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProfessionalProfile'
+          description: ''
+  /api/v1/professionals/categories/:
+    get:
+      operationId: api_v1_professionals_categories_list
+      summary: Lister les catégories professionnelles
+      tags:
+      - Profils professionnels
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfessionalCategory'
+          description: ''
+  /api/v1/professionals/me/:
+    get:
+      operationId: api_v1_professionals_me_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalProfile'
+          description: ''
+    put:
+      operationId: api_v1_professionals_me_update
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalProfileRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalProfile'
+          description: ''
+    patch:
+      operationId: api_v1_professionals_me_partial_update
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfessionalProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfessionalProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfessionalProfileRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalProfile'
+          description: ''
+  /api/v1/professionals/me/documents/:
+    get:
+      operationId: api_v1_professionals_me_documents_list
+      summary: Lister ses justificatifs privés
+      tags:
+      - Profils professionnels
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfessionalDocument'
+          description: ''
+    post:
+      operationId: api_v1_professionals_me_documents_create
+      summary: Téléverser un justificatif privé (PDF/JPEG/PNG, 10 Mo maximum)
+      tags:
+      - Profils professionnels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfessionalDocumentUploadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfessionalDocumentUploadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfessionalDocumentUploadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalDocument'
+          description: ''
+  /api/v1/professionals/me/documents/{id}/:
+    delete:
+      operationId: api_v1_professionals_me_documents_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/professionals/me/documents/{id}/download/:
+    get:
+      operationId: api_v1_professionals_me_documents_download_retrieve
+      summary: Télécharger un de ses justificatifs privés
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Profils professionnels
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/professionals/me/submit/:
+    post:
+      operationId: api_v1_professionals_me_submit_create
+      summary: Soumettre le profil à validation
+      tags:
+      - Profils professionnels
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalProfile'
+          description: ''
+  /api/v1/promotions/admin/:
+    get:
+      operationId: api_v1_promotions_admin_list
+      summary: Superviser toutes les promotions
+      tags:
+      - Administration centrale
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/admin/{id}/approve/:
+    post:
+      operationId: api_v1_promotions_admin_approve_create
+      summary: Valider ou refuser une promotion
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration centrale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/admin/{id}/archive/:
+    post:
+      operationId: api_v1_promotions_admin_archive_create
+      summary: Archiver une promotion dont la suppression est demandée
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration centrale
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/admin/{id}/reject/:
+    post:
+      operationId: api_v1_promotions_admin_reject_create
+      summary: Valider ou refuser une promotion
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Administration centrale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PromotionDecisionRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/:
+    get:
+      operationId: api_v1_promotions_partner_list
+      summary: Lister les promotions de son vendeur
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+          description: ''
+    post:
+      operationId: api_v1_promotions_partner_create
+      summary: Créer une promotion soumise à validation
+      tags:
+      - Promotions partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PromotionWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PromotionWriteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/{id}/:
+    get:
+      operationId: api_v1_promotions_partner_retrieve
+      summary: Consulter une promotion de son vendeur
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+    patch:
+      operationId: api_v1_promotions_partner_partial_update
+      summary: Modifier une promotion en attente ou refusée
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPromotionWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPromotionWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPromotionWriteRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/{id}/activate/:
+    post:
+      operationId: api_v1_promotions_partner_activate_create
+      summary: Activer une promotion validée
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/{id}/deactivate/:
+    post:
+      operationId: api_v1_promotions_partner_deactivate_create
+      summary: Désactiver une promotion active
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/{id}/request-removal/:
+    post:
+      operationId: api_v1_promotions_partner_request_removal_create
+      summary: Demander l'archivage d'une promotion
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+          description: ''
+  /api/v1/promotions/partner/{id}/results/:
+    get:
+      operationId: api_v1_promotions_partner_results_retrieve
+      summary: Consulter les résultats d'une promotion
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Promotions partenaire
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionResult'
+          description: ''
+  /api/v1/promotions/public/:
+    get:
+      operationId: api_v1_promotions_public_list
+      summary: Lister les promotions publiques validées et actives
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - Catalogue public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPromotionPublicList'
+          description: ''
+  /api/v1/reference/countries/:
+    get:
+      operationId: api_v1_reference_countries_list
+      summary: Lister les pays actifs
+      tags:
+      - Référentiels
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+          description: ''
+  /api/v1/site-content/admin/configuration/:
+    get:
+      operationId: api_v1_site_content_admin_configuration_retrieve
+      summary: Lire la configuration du site
+      tags:
+      - Contenu du site
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteConfigurationResponse'
+          description: ''
+    patch:
+      operationId: api_v1_site_content_admin_configuration_partial_update
+      summary: Modifier la configuration du site
+      tags:
+      - Contenu du site
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteConfigurationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteConfigurationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteConfigurationRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteConfigurationResponse'
+          description: ''
+  /api/v1/site-content/admin/faqs/:
+    get:
+      operationId: api_v1_site_content_admin_faqs_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FAQEntry'
+          description: ''
+    post:
+      operationId: api_v1_site_content_admin_faqs_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQEntry'
+          description: ''
+  /api/v1/site-content/admin/faqs/{id}/:
+    get:
+      operationId: api_v1_site_content_admin_faqs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faq entry.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQEntry'
+          description: ''
+    put:
+      operationId: api_v1_site_content_admin_faqs_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faq entry.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FAQEntryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQEntry'
+          description: ''
+    patch:
+      operationId: api_v1_site_content_admin_faqs_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faq entry.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFAQEntryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFAQEntryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFAQEntryRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQEntry'
+          description: ''
+    delete:
+      operationId: api_v1_site_content_admin_faqs_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faq entry.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/site-content/admin/images/:
+    get:
+      operationId: api_v1_site_content_admin_images_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteImage'
+          description: ''
+    post:
+      operationId: api_v1_site_content_admin_images_create
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteImage'
+          description: ''
+  /api/v1/site-content/admin/images/{id}/:
+    get:
+      operationId: api_v1_site_content_admin_images_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site image.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteImage'
+          description: ''
+    put:
+      operationId: api_v1_site_content_admin_images_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site image.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteImageRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteImage'
+          description: ''
+    patch:
+      operationId: api_v1_site_content_admin_images_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site image.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteImageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteImageRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteImageRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteImage'
+          description: ''
+    delete:
+      operationId: api_v1_site_content_admin_images_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site image.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/site-content/admin/news/:
+    get:
+      operationId: api_v1_site_content_admin_news_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    post:
+      operationId: api_v1_site_content_admin_news_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+  /api/v1/site-content/admin/news/{id}/:
+    get:
+      operationId: api_v1_site_content_admin_news_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    put:
+      operationId: api_v1_site_content_admin_news_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsArticleRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    patch:
+      operationId: api_v1_site_content_admin_news_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticleRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    delete:
+      operationId: api_v1_site_content_admin_news_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/site-content/admin/pages/:
+    get:
+      operationId: api_v1_site_content_admin_pages_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PageContent'
+          description: ''
+    post:
+      operationId: api_v1_site_content_admin_pages_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PageContentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PageContentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PageContentRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageContent'
+          description: ''
+  /api/v1/site-content/admin/pages/{id}/:
+    get:
+      operationId: api_v1_site_content_admin_pages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this page content.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageContent'
+          description: ''
+    patch:
+      operationId: api_v1_site_content_admin_pages_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this page content.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPageContentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPageContentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPageContentRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageContent'
+          description: ''
+  /api/v1/site-content/public/configuration/:
+    get:
+      operationId: api_v1_site_content_public_configuration_retrieve
+      summary: Lire la configuration publique du site
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteConfigurationResponse'
+          description: ''
+  /api/v1/site-content/public/faqs/:
+    get:
+      operationId: api_v1_site_content_public_faqs_retrieve
+      summary: Lister les questions fréquentes publiques
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFAQResponse'
+          description: ''
+  /api/v1/site-content/public/images/:
+    get:
+      operationId: site_content_public_images_list
+      summary: Lister les images publiques du site
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicSiteImageListResponse'
+          description: ''
+  /api/v1/site-content/public/images/{slot}/:
+    get:
+      operationId: site_content_public_image_by_slot_retrieve
+      summary: Télécharger une image publique du site
+      parameters:
+      - in: path
+        name: slot
+        schema:
+          type: string
+        required: true
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Fichier image
+  /api/v1/site-content/public/news/:
+    get:
+      operationId: api_v1_site_content_public_news_list
+      summary: Lister les actualités publiées
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsArticle'
+          description: ''
+  /api/v1/site-content/public/pages/{page}/:
+    get:
+      operationId: api_v1_site_content_public_pages_retrieve
+      summary: Lire une page éditoriale publique
+      parameters:
+      - in: path
+        name: page
+        schema:
+          type: string
+        required: true
+      tags:
+      - Contenu du site
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageContent'
+          description: ''
+components:
+  schemas:
+    AccountList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: Nom d’utilisateur
+          description: Requis. 150 caractères maximum. Uniquement des lettres, nombres
+            et les caractères « @ », « . », « + », « - » et « _ ».
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Adresse électronique
+          maxLength: 254
+        first_name:
+          type: string
+          title: Prénom
+          maxLength: 150
+        last_name:
+          type: string
+          title: Nom
+          maxLength: 150
+        is_active:
+          type: boolean
+          title: Actif
+          description: Précise si l’utilisateur doit être considéré comme actif. Décochez
+            ceci plutôt que de supprimer le compte.
+        is_staff:
+          type: boolean
+          title: Statut équipe
+          description: Précise si l’utilisateur peut se connecter à ce site d'administration.
+        status:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            title: Nom
+          readOnly: true
+        date_joined:
+          type: string
+          format: date-time
+          title: Date d’inscription
+      required:
+      - id
+      - roles
+      - status
+      - username
+    AdminDashboard:
+      type: object
+      properties:
+        users:
+          $ref: '#/components/schemas/AdminUserMetrics'
+        professional_verifications:
+          $ref: '#/components/schemas/AdminVerificationMetrics'
+      required:
+      - professional_verifications
+      - users
+    AdminProfessionalDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          readOnly: true
+        original_filename:
+          type: string
+          readOnly: true
+        content_type:
+          type: string
+          readOnly: true
+        size_bytes:
+          type: integer
+          readOnly: true
+        review_status:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalDocumentReviewStatusEnum'
+          readOnly: true
+        download_url:
+          type: string
+          format: uri
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        profile_id:
+          type: integer
+          readOnly: true
+        profile_name:
+          type: string
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+      required:
+      - category
+      - content_type
+      - created_at
+      - document_type
+      - download_url
+      - id
+      - original_filename
+      - profile_id
+      - profile_name
+      - review_status
+      - size_bytes
+    AdminProfessionalProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalCategoryEnum'
+          readOnly: true
+        category_label:
+          type: string
+          readOnly: true
+        legal_name:
+          type: string
+          maxLength: 180
+        manager_name:
+          type: string
+          maxLength: 180
+        contact_phone:
+          type: string
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        contact_email:
+          type: string
+          format: email
+          maxLength: 254
+        country:
+          type: integer
+          nullable: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        address:
+          type: string
+          maxLength: 240
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        description:
+          type: string
+          maxLength: 4000
+        details: {}
+        account_status:
+          type: string
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalProfileVerificationStatusEnum'
+          readOnly: true
+        is_complete:
+          type: boolean
+          readOnly: true
+        missing_information:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_id:
+          type: integer
+          readOnly: true
+        user_email:
+          type: string
+          format: email
+          readOnly: true
+      required:
+      - account_status
+      - category
+      - category_label
+      - created_at
+      - id
+      - is_complete
+      - legal_name
+      - missing_information
+      - updated_at
+      - user_email
+      - user_id
+      - verification_status
+    AdminUserMetrics:
+      type: object
+      properties:
+        total:
+          type: integer
+        active:
+          type: integer
+        suspended:
+          type: integer
+        closed:
+          type: integer
+        disabled:
+          type: integer
+      required:
+      - active
+      - closed
+      - disabled
+      - suspended
+      - total
+    AdminVerificationMetrics:
+      type: object
+      properties:
+        pending:
+          type: integer
+        approved:
+          type: integer
+        rejected:
+          type: integer
+      required:
+      - approved
+      - pending
+      - rejected
+    AuthSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        account_status:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        professional_profile_id:
+          type: integer
+          nullable: true
+          readOnly: true
+      required:
+      - account_status
+      - email
+      - id
+      - professional_profile_id
+      - roles
+    BlankEnum:
+      enum:
+      - ''
+    BuyerAddress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        label:
+          type: string
+          maxLength: 60
+        recipient_name:
+          type: string
+          maxLength: 120
+        phone_number:
+          type: string
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        country:
+          type: integer
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        neighbourhood:
+          type: string
+          maxLength: 120
+        complement:
+          type: string
+          maxLength: 500
+        is_primary:
+          type: boolean
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - city
+      - country
+      - created_at
+      - id
+      - phone_number
+      - recipient_name
+      - updated_at
+    BuyerAddressRequest:
+      type: object
+      properties:
+        label:
+          type: string
+          maxLength: 60
+        recipient_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        phone_number:
+          type: string
+          minLength: 1
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        country:
+          type: integer
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 120
+        neighbourhood:
+          type: string
+          maxLength: 120
+        complement:
+          type: string
+          maxLength: 500
+        is_primary:
+          type: boolean
+        is_active:
+          type: boolean
+      required:
+      - city
+      - country
+      - phone_number
+      - recipient_name
+    Cart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          readOnly: true
+        item_count:
+          type: integer
+          readOnly: true
+        subtotal_mga:
+          type: string
+          readOnly: true
+        discount_mga:
+          type: string
+          readOnly: true
+        total_mga:
+          type: string
+          readOnly: true
+        coupon_code:
+          type: string
+          readOnly: true
+        coupon_error:
+          type: string
+          nullable: true
+          readOnly: true
+        promotion:
+          allOf:
+          - $ref: '#/components/schemas/PromotionSummary'
+          nullable: true
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - coupon_code
+      - coupon_error
+      - created_at
+      - discount_mga
+      - id
+      - item_count
+      - items
+      - promotion
+      - subtotal_mga
+      - total_mga
+      - updated_at
+    CartAddRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 99
+          minimum: 1
+      required:
+      - product
+      - quantity
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        product_title:
+          type: string
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        stock_quantity:
+          type: integer
+          readOnly: true
+        unit_price_mga:
+          type: string
+          readOnly: true
+        line_total_mga:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - line_total_mga
+      - product
+      - product_title
+      - quantity
+      - seller_name
+      - stock_quantity
+      - unit_price_mga
+      - updated_at
+    CatalogProductAdmin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        product_type_label:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 180
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        image:
+          type: string
+          format: uri
+          pattern: (?:jpg|jpeg|png|webp)$
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        seller:
+          type: integer
+        seller_name:
+          type: string
+          readOnly: true
+        seller_status:
+          type: string
+          readOnly: true
+        seller_is_verified:
+          type: boolean
+          readOnly: true
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        status:
+          $ref: '#/components/schemas/CatalogProductStatusEnum'
+        status_label:
+          type: string
+          readOnly: true
+        moderation_status:
+          allOf:
+          - $ref: '#/components/schemas/CatalogProductModerationStatusEnum'
+          readOnly: true
+        moderation_status_label:
+          type: string
+          readOnly: true
+        submitted_for_review_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        review_notes:
+          type: string
+          readOnly: true
+        is_sponsored:
+          type: boolean
+        price_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        availability_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+      required:
+      - availability_updated_at
+      - id
+      - image_url
+      - moderation_status
+      - moderation_status_label
+      - price_mga
+      - price_updated_at
+      - product_type
+      - product_type_label
+      - review_notes
+      - seller
+      - seller_is_verified
+      - seller_name
+      - seller_status
+      - slug
+      - status_label
+      - submitted_for_review_at
+      - title
+      - updated_at
+    CatalogProductAdminRequest:
+      type: object
+      properties:
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        image:
+          type: string
+          format: binary
+          pattern: (?:jpg|jpeg|png|webp)$
+        seller:
+          type: integer
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        status:
+          $ref: '#/components/schemas/CatalogProductStatusEnum'
+        is_sponsored:
+          type: boolean
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+      required:
+      - price_mga
+      - product_type
+      - seller
+      - title
+    CatalogProductAuthorizationStatusEnum:
+      enum:
+      - pending
+      - verified
+      - rejected
+      type: string
+      description: |-
+        * `pending` - À vérifier
+        * `verified` - AMM vérifiée
+        * `rejected` - AMM refusée
+    CatalogProductAvailabilityEnum:
+      enum:
+      - available
+      - limited
+      - unavailable
+      type: string
+      description: |-
+        * `available` - Disponible
+        * `limited` - Disponibilité limitée
+        * `unavailable` - Indisponible
+    CatalogProductEquipmentCategoryEnum:
+      enum:
+      - diagnostic
+      - monitoring
+      - mobility
+      - protection
+      - consumables
+      - other
+      type: string
+      description: |-
+        * `diagnostic` - Diagnostic
+        * `monitoring` - Surveillance médicale
+        * `mobility` - Mobilité et transfert
+        * `protection` - Protection
+        * `consumables` - Consommables
+        * `other` - Autre matériel médical
+    CatalogProductModerationStatusEnum:
+      enum:
+      - not_required
+      - pending
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `not_required` - Non requise
+        * `pending` - En attente de modération
+        * `approved` - Approuvée
+        * `rejected` - Refusée
+    CatalogProductProductTypeEnum:
+      enum:
+      - medicine
+      - equipment
+      type: string
+      description: |-
+        * `medicine` - Médicament
+        * `equipment` - Matériel médical
+    CatalogProductStatusEnum:
+      enum:
+      - draft
+      - published
+      - archived
+      type: string
+      description: |-
+        * `draft` - Brouillon
+        * `published` - Publié
+        * `archived` - Archivé
+    CatalogSellerAdmin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/CatalogSellerKindEnum'
+        professional_profile:
+          type: integer
+          nullable: true
+        professional_name:
+          type: string
+          readOnly: true
+          default: ''
+        professional_status:
+          type: string
+          readOnly: true
+          default: ''
+        name:
+          type: string
+          maxLength: 180
+        country:
+          type: integer
+        country_name:
+          type: string
+          readOnly: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        verification_status:
+          $ref: '#/components/schemas/CatalogSellerVerificationStatusEnum'
+        verification_status_label:
+          type: string
+          readOnly: true
+        verification_reference:
+          type: string
+          maxLength: 160
+        is_active:
+          type: boolean
+        is_catalog_verified:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - city
+      - country
+      - country_name
+      - created_at
+      - id
+      - is_catalog_verified
+      - kind
+      - name
+      - professional_name
+      - professional_status
+      - updated_at
+      - verification_status_label
+    CatalogSellerAdminRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/CatalogSellerKindEnum'
+        professional_profile:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        country:
+          type: integer
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 120
+        verification_status:
+          $ref: '#/components/schemas/CatalogSellerVerificationStatusEnum'
+        verification_reference:
+          type: string
+          maxLength: 160
+        is_active:
+          type: boolean
+      required:
+      - city
+      - country
+      - kind
+      - name
+    CatalogSellerKindEnum:
+      enum:
+      - pharmacy
+      - medical_supplier
+      type: string
+      description: |-
+        * `pharmacy` - Pharmacie
+        * `medical_supplier` - Fournisseur de matériel médical
+    CatalogSellerVerificationStatusEnum:
+      enum:
+      - pending
+      - verified
+      - rejected
+      type: string
+      description: |-
+        * `pending` - À vérifier
+        * `verified` - Vérifié
+        * `rejected` - Refusé
+    CheckoutRequest:
+      type: object
+      properties:
+        customer_note:
+          type: string
+          default: ''
+          maxLength: 1000
+        delivery_address:
+          type: integer
+          nullable: true
+    Country:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code_alpha2:
+          type: string
+          pattern: ^[A-Z]{2}$
+          maxLength: 2
+        code_alpha3:
+          type: string
+          pattern: ^[A-Z]{3}$
+          maxLength: 3
+        name_fr:
+          type: string
+          maxLength: 100
+        name_en:
+          type: string
+          maxLength: 100
+      required:
+      - code_alpha2
+      - code_alpha3
+      - id
+      - name_en
+      - name_fr
+    CouponApplyRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 32
+      required:
+      - code
+    CsrfCookie:
+      type: object
+      properties:
+        csrf:
+          type: string
+      required:
+      - csrf
+    DiscountTypeEnum:
+      enum:
+      - percent
+      - fixed
+      type: string
+      description: |-
+        * `percent` - Pourcentage
+        * `fixed` - Montant fixe
+    DocumentTypeEnum:
+      enum:
+      - license
+      - diploma
+      - identity
+      - registration
+      - facility
+      - other
+      type: string
+      description: |-
+        * `license` - Licence ou autorisation
+        * `diploma` - Diplôme
+        * `identity` - Pièce d’identité
+        * `registration` - Inscription professionnelle
+        * `facility` - Document de l’établissement
+        * `other` - Autre justificatif
+    FAQEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: string
+          maxLength: 300
+        answer:
+          type: string
+          maxLength: 5000
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_visible:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - answer
+      - id
+      - question
+      - updated_at
+    FAQEntryRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 300
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_visible:
+          type: boolean
+      required:
+      - answer
+      - question
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+      required:
+      - service
+      - status
+      - version
+    MarketplaceAdminOptions:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        pharmacies:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        accounts:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - accounts
+      - countries
+      - pharmacies
+    ModerationRejectRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required:
+      - reason
+    NewsArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 220
+          pattern: ^[-a-zA-Z0-9_]+$
+        summary:
+          type: string
+          maxLength: 400
+        body:
+          type: string
+          maxLength: 12000
+        is_published:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - id
+      - published_at
+      - summary
+      - title
+      - updated_at
+    NewsArticleRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 220
+          pattern: ^[-a-zA-Z0-9_]+$
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 400
+        body:
+          type: string
+          minLength: 1
+          maxLength: 12000
+        is_published:
+          type: boolean
+      required:
+      - body
+      - summary
+      - title
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          readOnly: true
+        notification_type_label:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        target_type:
+          type: string
+          readOnly: true
+        target_id:
+          type: string
+          readOnly: true
+        link:
+          type: string
+          readOnly: true
+        whatsapp_link:
+          type: string
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - id
+      - link
+      - notification_type
+      - notification_type_label
+      - read_at
+      - target_id
+      - target_type
+      - title
+      - whatsapp_link
+    NotificationPreference:
+      type: object
+      properties:
+        whatsapp_opt_in:
+          type: boolean
+        consent_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - consent_at
+      - updated_at
+    NotificationTypeEnum:
+      enum:
+      - order_created
+      - order_accepted
+      - order_rejected
+      - order_preparing
+      - order_ready
+      - order_completed
+      - order_cancelled
+      - moderation_approved
+      - moderation_rejected
+      - stock_depleted
+      type: string
+      description: |-
+        * `order_created` - Commande créée
+        * `order_accepted` - Commande acceptée
+        * `order_rejected` - Commande refusée
+        * `order_preparing` - Commande en préparation
+        * `order_ready` - Réservation prête
+        * `order_completed` - Commande finalisée
+        * `order_cancelled` - Commande annulée
+        * `moderation_approved` - Produit approuvé
+        * `moderation_rejected` - Produit refusé
+        * `stock_depleted` - Stock épuisé
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        reference:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OrderStatusEnum'
+          readOnly: true
+        subtotal_mga:
+          type: string
+          readOnly: true
+        discount_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        total_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        coupon_code:
+          type: string
+          readOnly: true
+        customer_note:
+          type: string
+          readOnly: true
+        seller_note:
+          type: string
+          readOnly: true
+        rejection_reason:
+          type: string
+          readOnly: true
+        seller:
+          type: integer
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        customer:
+          type: integer
+          readOnly: true
+        customer_username:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        accepted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        rejected_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        preparing_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        ready_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        cancelled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        delivery_recipient:
+          type: string
+          readOnly: true
+        delivery_phone:
+          type: string
+          readOnly: true
+        delivery_country:
+          type: string
+          readOnly: true
+        delivery_region:
+          type: string
+          readOnly: true
+        delivery_city:
+          type: string
+          readOnly: true
+        delivery_neighbourhood:
+          type: string
+          readOnly: true
+        delivery_complement:
+          type: string
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderEvent'
+          readOnly: true
+      required:
+      - accepted_at
+      - cancelled_at
+      - completed_at
+      - coupon_code
+      - created_at
+      - customer
+      - customer_note
+      - customer_username
+      - delivery_city
+      - delivery_complement
+      - delivery_country
+      - delivery_neighbourhood
+      - delivery_phone
+      - delivery_recipient
+      - delivery_region
+      - discount_mga
+      - events
+      - id
+      - items
+      - preparing_at
+      - ready_at
+      - reference
+      - rejected_at
+      - rejection_reason
+      - seller
+      - seller_name
+      - seller_note
+      - status
+      - subtotal_mga
+      - total_mga
+      - updated_at
+    OrderEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        from_status:
+          allOf:
+          - $ref: '#/components/schemas/OrderStatusEnum'
+          readOnly: true
+        to_status:
+          allOf:
+          - $ref: '#/components/schemas/OrderStatusEnum'
+          readOnly: true
+        note:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - from_status
+      - id
+      - note
+      - to_status
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        unit_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        original_unit_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        discount_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        line_total_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        coupon_code:
+          type: string
+          readOnly: true
+        requires_prescription:
+          type: boolean
+          readOnly: true
+        authorization_status:
+          type: string
+          readOnly: true
+        authorization_reference:
+          type: string
+          readOnly: true
+        prescription_checked_by_seller:
+          type: boolean
+          readOnly: true
+        prescription_checked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - authorization_reference
+      - authorization_status
+      - coupon_code
+      - discount_mga
+      - id
+      - line_total_mga
+      - original_unit_price_mga
+      - prescription_checked_at
+      - prescription_checked_by_seller
+      - product
+      - quantity
+      - requires_prescription
+      - title
+      - unit_price_mga
+    OrderStatusEnum:
+      enum:
+      - awaiting_seller
+      - accepted
+      - rejected
+      - preparing
+      - ready
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `awaiting_seller` - En attente du vendeur
+        * `accepted` - Acceptée
+        * `rejected` - Refusée
+        * `preparing` - En préparation
+        * `ready` - Prête pour retrait
+        * `completed` - Finalisée
+        * `cancelled` - Annulée
+    PageContent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        page:
+          $ref: '#/components/schemas/PageContentPageEnum'
+        title:
+          type: string
+          maxLength: 200
+        introduction:
+          type: string
+          maxLength: 600
+        body:
+          type: string
+          maxLength: 12000
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - id
+      - page
+      - title
+      - updated_at
+    PageContentPageEnum:
+      enum:
+      - home
+      - about
+      - contact
+      - terms
+      - privacy
+      type: string
+      description: |-
+        * `home` - Accueil
+        * `about` - À propos
+        * `contact` - Contact
+        * `terms` - Conditions
+        * `privacy` - Confidentialité
+    PageContentRequest:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/PageContentPageEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        introduction:
+          type: string
+          maxLength: 600
+        body:
+          type: string
+          maxLength: 12000
+      required:
+      - page
+      - title
+    PaginatedAccountListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountList'
+    PaginatedAdminProfessionalDocumentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminProfessionalDocument'
+    PaginatedAdminProfessionalProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminProfessionalProfile'
+    PaginatedCatalogProductAdminList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogProductAdmin'
+    PaginatedCatalogSellerAdminList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSellerAdmin'
+    PaginatedPartnerProductImageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnerProductImage'
+    PaginatedPartnerProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnerProduct'
+    PaginatedProductPriceHistoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPriceHistory'
+    PaginatedProfessionalVerificationRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfessionalVerificationRequest'
+    PaginatedPromotionPublicList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionPublic'
+    PartnerProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        product_type_label:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 180
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        seller:
+          type: integer
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/CatalogProductStatusEnum'
+          readOnly: true
+        moderation_status:
+          allOf:
+          - $ref: '#/components/schemas/CatalogProductModerationStatusEnum'
+          readOnly: true
+        moderation_status_label:
+          type: string
+          readOnly: true
+        stock_quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        stock_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        price_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        availability_updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        submitted_for_review_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        review_notes:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+      required:
+      - availability_updated_at
+      - created_at
+      - id
+      - image_url
+      - moderation_status
+      - moderation_status_label
+      - price_mga
+      - price_updated_at
+      - product_type
+      - product_type_label
+      - review_notes
+      - reviewed_at
+      - seller
+      - seller_name
+      - slug
+      - status
+      - stock_updated_at
+      - submitted_for_review_at
+      - title
+      - updated_at
+    PartnerProductImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file_url:
+          type: string
+          format: uri
+          readOnly: true
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_primary:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - file_url
+      - id
+      - updated_at
+    PartnerProductImageRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          writeOnly: true
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_primary:
+          type: boolean
+      required:
+      - file
+    PartnerProductRequest:
+      type: object
+      properties:
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        stock_quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+      required:
+      - price_mga
+      - product_type
+      - title
+    PartnerSeller:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/CatalogSellerKindEnum'
+          readOnly: true
+        kind_label:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        country:
+          type: string
+          readOnly: true
+        region:
+          type: string
+          readOnly: true
+        city:
+          type: string
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/CatalogSellerVerificationStatusEnum'
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        is_catalog_verified:
+          type: boolean
+          readOnly: true
+      required:
+      - city
+      - country
+      - id
+      - is_active
+      - is_catalog_verified
+      - kind
+      - kind_label
+      - name
+      - region
+      - verification_status
+    PatchedBuyerAddressRequest:
+      type: object
+      properties:
+        label:
+          type: string
+          maxLength: 60
+        recipient_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        phone_number:
+          type: string
+          minLength: 1
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        country:
+          type: integer
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 120
+        neighbourhood:
+          type: string
+          maxLength: 120
+        complement:
+          type: string
+          maxLength: 500
+        is_primary:
+          type: boolean
+        is_active:
+          type: boolean
+    PatchedCartItemUpdateRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 99
+          minimum: 1
+    PatchedCatalogProductAdminRequest:
+      type: object
+      properties:
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        image:
+          type: string
+          format: binary
+          pattern: (?:jpg|jpeg|png|webp)$
+        seller:
+          type: integer
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        status:
+          $ref: '#/components/schemas/CatalogProductStatusEnum'
+        is_sponsored:
+          type: boolean
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+    PatchedCatalogSellerAdminRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/CatalogSellerKindEnum'
+        professional_profile:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        country:
+          type: integer
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 120
+        verification_status:
+          $ref: '#/components/schemas/CatalogSellerVerificationStatusEnum'
+        verification_reference:
+          type: string
+          maxLength: 160
+        is_active:
+          type: boolean
+    PatchedFAQEntryRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 300
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_visible:
+          type: boolean
+    PatchedNewsArticleRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 220
+          pattern: ^[-a-zA-Z0-9_]+$
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 400
+        body:
+          type: string
+          minLength: 1
+          maxLength: 12000
+        is_published:
+          type: boolean
+    PatchedNotificationPreferenceRequest:
+      type: object
+      properties:
+        whatsapp_opt_in:
+          type: boolean
+    PatchedPageContentRequest:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/PageContentPageEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        introduction:
+          type: string
+          maxLength: 600
+        body:
+          type: string
+          maxLength: 12000
+    PatchedPartnerAvailabilityUpdateRequest:
+      type: object
+      properties:
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+    PatchedPartnerProductImageRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          writeOnly: true
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_primary:
+          type: boolean
+    PatchedPartnerProductRequest:
+      type: object
+      properties:
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 180
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        stock_quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        authorization_status:
+          $ref: '#/components/schemas/CatalogProductAuthorizationStatusEnum'
+        authorization_reference:
+          type: string
+          maxLength: 160
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+    PatchedPartnerStockUpdateRequest:
+      type: object
+      properties:
+        stock_quantity:
+          type: integer
+          minimum: 0
+          nullable: true
+    PatchedPatientProfileRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+        country:
+          type: integer
+          nullable: true
+    PatchedProfessionalProfileRequest:
+      type: object
+      properties:
+        legal_name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        manager_name:
+          type: string
+          maxLength: 180
+        contact_phone:
+          type: string
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        contact_email:
+          type: string
+          format: email
+          maxLength: 254
+        country:
+          type: integer
+          nullable: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        address:
+          type: string
+          maxLength: 240
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        description:
+          type: string
+          maxLength: 4000
+        details: {}
+    PatchedPromotionWriteRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 32
+        title:
+          type: string
+          maxLength: 120
+        discount_type:
+          $ref: '#/components/schemas/DiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+        max_redemptions:
+          type: integer
+          minimum: 1
+          nullable: true
+    PatchedSiteConfigurationRequest:
+      type: object
+      properties:
+        whatsapp_number:
+          type: string
+          maxLength: 20
+    PatchedSiteImageRequest:
+      type: object
+      properties:
+        slot:
+          $ref: '#/components/schemas/SiteImageSlotEnum'
+        image:
+          type: string
+          format: binary
+        alt_text:
+          type: string
+          minLength: 1
+          maxLength: 240
+    PatientProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+        country:
+          type: integer
+          nullable: true
+    PatientRegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 128
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 20
+        country:
+          type: integer
+          nullable: true
+      required:
+      - email
+      - first_name
+      - last_name
+      - password
+    PatientRegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            type: string
+      required:
+      - email
+      - id
+      - roles
+    ProductPriceHistory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        changed_at:
+          type: string
+          format: date-time
+          readOnly: true
+        changed_by_username:
+          type: string
+          readOnly: true
+          default: ''
+        reason:
+          type: string
+          readOnly: true
+      required:
+      - changed_at
+      - changed_by_username
+      - id
+      - price_mga
+      - reason
+    ProfessionalAccountStatusRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+    ProfessionalCategory:
+      type: object
+      properties:
+        code:
+          type: string
+        label:
+          type: string
+      required:
+      - code
+      - label
+    ProfessionalCategoryEnum:
+      enum:
+      - pharmacy
+      - doctor
+      - dentist
+      - laboratory
+      - delivery_courier
+      - delivery_company
+      type: string
+      description: |-
+        * `pharmacy` - Pharmacie
+        * `doctor` - Médecin
+        * `dentist` - Dentiste
+        * `laboratory` - Laboratoire d’analyses médicales
+        * `delivery_courier` - Livreur indépendant
+        * `delivery_company` - Société de livraison
+    ProfessionalDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          readOnly: true
+        original_filename:
+          type: string
+          readOnly: true
+        content_type:
+          type: string
+          readOnly: true
+        size_bytes:
+          type: integer
+          readOnly: true
+        review_status:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalDocumentReviewStatusEnum'
+          readOnly: true
+        download_url:
+          type: string
+          format: uri
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content_type
+      - created_at
+      - document_type
+      - download_url
+      - id
+      - original_filename
+      - review_status
+      - size_bytes
+    ProfessionalDocumentReviewStatusEnum:
+      enum:
+      - pending
+      - accepted
+      - rejected
+      type: string
+      description: |-
+        * `pending` - À examiner
+        * `accepted` - Accepté
+        * `rejected` - Refusé
+    ProfessionalDocumentUploadRequest:
+      type: object
+      properties:
+        document_type:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        file:
+          type: string
+          format: binary
+          writeOnly: true
+      required:
+      - document_type
+      - file
+    ProfessionalLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+    ProfessionalProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalCategoryEnum'
+          readOnly: true
+        category_label:
+          type: string
+          readOnly: true
+        legal_name:
+          type: string
+          maxLength: 180
+        manager_name:
+          type: string
+          maxLength: 180
+        contact_phone:
+          type: string
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        contact_email:
+          type: string
+          format: email
+          maxLength: 254
+        country:
+          type: integer
+          nullable: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        address:
+          type: string
+          maxLength: 240
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        description:
+          type: string
+          maxLength: 4000
+        details: {}
+        account_status:
+          type: string
+          readOnly: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalProfileVerificationStatusEnum'
+          readOnly: true
+        is_complete:
+          type: boolean
+          readOnly: true
+        missing_information:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - account_status
+      - category
+      - category_label
+      - created_at
+      - id
+      - is_complete
+      - legal_name
+      - missing_information
+      - updated_at
+      - verification_status
+    ProfessionalProfileRequest:
+      type: object
+      properties:
+        legal_name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        manager_name:
+          type: string
+          maxLength: 180
+        contact_phone:
+          type: string
+          pattern: ^\+?[0-9 ()-]{6,20}$
+          maxLength: 20
+        contact_email:
+          type: string
+          format: email
+          maxLength: 254
+        country:
+          type: integer
+          nullable: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        address:
+          type: string
+          maxLength: 240
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        description:
+          type: string
+          maxLength: 4000
+        details: {}
+      required:
+      - legal_name
+    ProfessionalProfileVerificationStatusEnum:
+      enum:
+      - draft
+      - pending
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `draft` - Brouillon
+        * `pending` - En attente
+        * `approved` - Approuvé
+        * `rejected` - Refusé
+    ProfessionalRegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 128
+        category:
+          $ref: '#/components/schemas/ProfessionalCategoryEnum'
+        legal_name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        contact_phone:
+          type: string
+          maxLength: 20
+      required:
+      - category
+      - email
+      - legal_name
+      - password
+    ProfessionalVerificationRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_id:
+          type: integer
+          readOnly: true
+        user_email:
+          type: string
+          format: email
+          readOnly: true
+        category:
+          $ref: '#/components/schemas/VerificationCategoryEnum'
+        organization_name:
+          type: string
+          maxLength: 180
+        license_number:
+          type: string
+          maxLength: 80
+        country:
+          type: integer
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProfessionalVerificationStatusEnum'
+          readOnly: true
+          default: pending
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        review_notes:
+          type: string
+          readOnly: true
+      required:
+      - category
+      - country
+      - created_at
+      - id
+      - license_number
+      - organization_name
+      - review_notes
+      - reviewed_at
+      - status
+      - user_email
+      - user_id
+    ProfessionalVerificationRequestRequest:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/VerificationCategoryEnum'
+        organization_name:
+          type: string
+          minLength: 1
+          maxLength: 180
+        license_number:
+          type: string
+          maxLength: 80
+        country:
+          type: integer
+      required:
+      - category
+      - country
+      - license_number
+      - organization_name
+    ProfessionalVerificationStatusEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `pending` - En attente
+        * `approved` - Approuvée
+        * `rejected` - Refusée
+    Promotion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        seller:
+          type: integer
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        product_title:
+          type: string
+          readOnly: true
+        product_slug:
+          type: string
+          readOnly: true
+        discount_type:
+          allOf:
+          - $ref: '#/components/schemas/DiscountTypeEnum'
+          readOnly: true
+        discount_type_label:
+          type: string
+          readOnly: true
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        discount_label:
+          type: string
+          readOnly: true
+        original_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        promotional_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        starts_at:
+          type: string
+          format: date-time
+          readOnly: true
+        ends_at:
+          type: string
+          format: date-time
+          readOnly: true
+        max_redemptions:
+          type: integer
+          readOnly: true
+          nullable: true
+        redemption_count:
+          type: integer
+          readOnly: true
+        remaining_quantity:
+          type: integer
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PromotionStatusEnum'
+          readOnly: true
+        status_label:
+          type: string
+          readOnly: true
+        review_notes:
+          type: string
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - discount_label
+      - discount_type
+      - discount_type_label
+      - discount_value
+      - ends_at
+      - id
+      - max_redemptions
+      - original_price_mga
+      - product
+      - product_slug
+      - product_title
+      - promotional_price_mga
+      - redemption_count
+      - remaining_quantity
+      - review_notes
+      - reviewed_at
+      - seller
+      - seller_name
+      - starts_at
+      - status
+      - status_label
+      - title
+      - updated_at
+    PromotionDecisionRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          default: ''
+          maxLength: 500
+    PromotionPublic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        product_title:
+          type: string
+          readOnly: true
+        product_slug:
+          type: string
+          readOnly: true
+        product_type:
+          type: string
+          readOnly: true
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        discount_type:
+          allOf:
+          - $ref: '#/components/schemas/DiscountTypeEnum'
+          readOnly: true
+        discount_label:
+          type: string
+          readOnly: true
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        original_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        promotional_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        starts_at:
+          type: string
+          format: date-time
+          readOnly: true
+        ends_at:
+          type: string
+          format: date-time
+          readOnly: true
+        max_redemptions:
+          type: integer
+          readOnly: true
+          nullable: true
+        remaining_quantity:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - code
+      - discount_label
+      - discount_type
+      - discount_value
+      - ends_at
+      - id
+      - image_url
+      - max_redemptions
+      - original_price_mga
+      - product
+      - product_slug
+      - product_title
+      - product_type
+      - promotional_price_mga
+      - remaining_quantity
+      - starts_at
+      - title
+    PromotionResult:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        redemption_count:
+          type: integer
+        quantity_used:
+          type: integer
+        total_discount_mga:
+          type: string
+        remaining_quantity:
+          type: integer
+          nullable: true
+      required:
+      - code
+      - quantity_used
+      - redemption_count
+      - remaining_quantity
+      - status
+      - title
+      - total_discount_mga
+    PromotionStatusEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      - active
+      - paused
+      - removal_requested
+      - archived
+      type: string
+      description: |-
+        * `pending` - En attente de validation
+        * `approved` - Validée
+        * `rejected` - Refusée
+        * `active` - Active
+        * `paused` - Désactivée
+        * `removal_requested` - Suppression demandée
+        * `archived` - Archivée
+    PromotionSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        product_title:
+          type: string
+          readOnly: true
+        discount_label:
+          type: string
+          readOnly: true
+        original_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        promotional_price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PromotionStatusEnum'
+          readOnly: true
+      required:
+      - code
+      - discount_label
+      - id
+      - original_price_mga
+      - product
+      - product_title
+      - promotional_price_mga
+      - status
+      - title
+    PromotionWriteRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 32
+        title:
+          type: string
+          maxLength: 120
+        discount_type:
+          $ref: '#/components/schemas/DiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+        max_redemptions:
+          type: integer
+          minimum: 1
+          nullable: true
+      required:
+      - code
+      - discount_type
+      - discount_value
+      - ends_at
+      - product
+      - starts_at
+    PublicCatalogListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCatalogProduct'
+      required:
+      - count
+      - next
+      - previous
+      - results
+    PublicCatalogProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product_type:
+          $ref: '#/components/schemas/CatalogProductProductTypeEnum'
+        product_type_label:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 180
+        slug:
+          type: string
+          maxLength: 220
+          pattern: ^[-a-zA-Z0-9_]+$
+        brand:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 4000
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicProductImage'
+          readOnly: true
+        seller:
+          allOf:
+          - $ref: '#/components/schemas/PublicCatalogSeller'
+          readOnly: true
+        price_mga:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+        effective_price_mga:
+          type: string
+          readOnly: true
+        promotion:
+          allOf:
+          - $ref: '#/components/schemas/PromotionPublic'
+          nullable: true
+          readOnly: true
+        availability:
+          $ref: '#/components/schemas/CatalogProductAvailabilityEnum'
+        is_orderable:
+          type: boolean
+          readOnly: true
+        orderability_reason:
+          type: string
+          readOnly: true
+          nullable: true
+        is_sponsored:
+          type: boolean
+        price_updated_at:
+          type: string
+          format: date-time
+        availability_updated_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        active_ingredient:
+          type: string
+          maxLength: 180
+        dosage:
+          type: string
+          maxLength: 120
+        pharmaceutical_form:
+          type: string
+          maxLength: 120
+        packaging:
+          type: string
+          maxLength: 160
+        requires_prescription:
+          type: boolean
+        equipment_category:
+          oneOf:
+          - $ref: '#/components/schemas/CatalogProductEquipmentCategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        equipment_category_label:
+          type: string
+          readOnly: true
+        model_name:
+          type: string
+          maxLength: 160
+        technical_specifications: {}
+        warranty:
+          type: string
+          maxLength: 240
+      required:
+      - effective_price_mga
+      - equipment_category_label
+      - id
+      - image_url
+      - images
+      - is_orderable
+      - orderability_reason
+      - price_mga
+      - product_type
+      - product_type_label
+      - promotion
+      - seller
+      - title
+      - updated_at
+    PublicCatalogSearchResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCatalogProduct'
+        deferred_categories:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+      required:
+      - deferred_categories
+      - message
+      - products
+      - query
+    PublicCatalogSeller:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/CatalogSellerKindEnum'
+        kind_label:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 180
+        country:
+          type: string
+          readOnly: true
+        region:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 120
+        verified:
+          type: boolean
+          readOnly: true
+      required:
+      - city
+      - country
+      - id
+      - kind
+      - kind_label
+      - name
+      - verified
+    PublicFAQResponse:
+      type: object
+      properties:
+        managed:
+          type: boolean
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/FAQEntry'
+      required:
+      - entries
+      - managed
+    PublicProductImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_primary:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          readOnly: true
+      required:
+      - id
+      - url
+    PublicSiteImageListResponse:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteImage'
+        hidden_slots:
+          type: array
+          items:
+            type: string
+      required:
+      - hidden_slots
+      - images
+    SellerOwner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        account:
+          type: integer
+          readOnly: true
+        account_username:
+          type: string
+          readOnly: true
+        seller:
+          type: integer
+          readOnly: true
+        seller_name:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - account
+      - account_username
+      - created_at
+      - id
+      - seller
+      - seller_name
+      - updated_at
+    SellerOwnerAssignmentRequest:
+      type: object
+      properties:
+        account:
+          type: integer
+      required:
+      - account
+    SiteConfigurationResponse:
+      type: object
+      properties:
+        whatsapp_number:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        use_database_config:
+          type: boolean
+      required:
+      - updated_at
+      - whatsapp_number
+    SiteImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slot:
+          $ref: '#/components/schemas/SiteImageSlotEnum'
+        image:
+          type: string
+          format: uri
+        url:
+          type: string
+          readOnly: true
+        alt_text:
+          type: string
+          maxLength: 240
+        is_visible:
+          type: boolean
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - alt_text
+      - id
+      - image
+      - is_visible
+      - slot
+      - updated_at
+      - url
+    SiteImageRequest:
+      type: object
+      properties:
+        slot:
+          $ref: '#/components/schemas/SiteImageSlotEnum'
+        image:
+          type: string
+          format: binary
+        alt_text:
+          type: string
+          minLength: 1
+          maxLength: 240
+      required:
+      - alt_text
+      - image
+      - slot
+    SiteImageSlotEnum:
+      enum:
+      - teleconsultation
+      - pharmacy
+      - laboratory
+      - dentistry
+      - specialist
+      type: string
+      description: |-
+        * `teleconsultation` - Téléconsultation
+        * `pharmacy` - Pharmacie
+        * `laboratory` - Laboratoire
+        * `dentistry` - Soins dentaires
+        * `specialist` - Médecins et spécialistes
+    TransitionNoteRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          default: ''
+          maxLength: 500
+    VerificationCategoryEnum:
+      enum:
+      - doctor
+      - dentist
+      - pharmacy
+      - laboratory
+      - clinic
+      - delivery_courier
+      - delivery_company
+      type: string
+      description: |-
+        * `doctor` - Médecin
+        * `dentist` - Dentiste
+        * `pharmacy` - Pharmacie
+        * `laboratory` - Laboratoire
+        * `clinic` - Clinique ou hôpital
+        * `delivery_courier` - Livreur indépendant
+        * `delivery_company` - Société de livraison
+    VerificationReviewRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/VerificationReviewStatusEnum'
+        notes:
+          type: string
+          maxLength: 1000
+      required:
+      - status
+    VerificationReviewStatusEnum:
+      enum:
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `approved` - approved
+        * `rejected` - rejected
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

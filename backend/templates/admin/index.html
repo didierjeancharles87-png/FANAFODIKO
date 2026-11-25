@@ -1,0 +1,16 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+{% block content %}
+<section class="module" aria-labelledby="platform-overview-title" style="margin-bottom: 20px;">
+  <h2 id="platform-overview-title">Indicateurs de la plateforme</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;padding:16px;">
+    <div><strong>Comptes</strong><br>{{ dashboard_metrics.users_total }}</div>
+    <div><strong>Comptes actifs</strong><br>{{ dashboard_metrics.users_active }}</div>
+    <div><strong>Comptes suspendus</strong><br>{{ dashboard_metrics.users_suspended }}</div>
+    <div><strong>Accès désactivés</strong><br>{{ dashboard_metrics.users_disabled }}</div>
+    <div><strong>Validations en attente</strong><br>{{ dashboard_metrics.professional_pending }}</div>
+    <div><strong>Professionnels validés</strong><br>{{ dashboard_metrics.professional_approved }}</div>
+  </div>
+</section>
+{{ block.super }}
+{% endblock %}

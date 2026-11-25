@@ -1,0 +1,12 @@
+export const NO_ONLINE_PAYMENT_NOTICE: string;
+export const PICKUP_NOTICE: string;
+export const PRESCRIPTION_NOTICE: string;
+export const RESERVATION_NOTICE: string;
+export function orderStatusLabel(value: string | null | undefined): string;
+export function moderationStatusLabel(value: string): string;
+export function notificationTypeLabel(value: string): string;
+export function canSubmitForReview(product: { status?: string } | null | undefined): boolean;
+export function orderTrackingHref(order: { id?: number; reference?: string } | null | undefined): string;
+export function orderConfirmationHref(order: { id?: number; reference?: string } | null | undefined): string;
+export const orderFlow: string[];
+export function orderTimeline(order: { status: string; events?: Array<{ to_status: string; note: string; created_at: string }> } | null | undefined): Array<{ status: string; label: string; at: string | null; note: string; done: boolean; current: boolean }>;

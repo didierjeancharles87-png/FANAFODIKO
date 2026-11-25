@@ -1,0 +1,28 @@
+{
+  "name": "fanafodiko-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --test src/lib/admin-operations.test.mjs src/lib/country-list.test.mjs src/lib/home-experience.test.mjs src/lib/marketplace.test.mjs src/lib/orderability-ui.test.mjs src/lib/patient-login-ui.test.mjs src/lib/phase7.test.mjs src/lib/status-display-ui.test.mjs src/lib/status-labels.test.mjs src/lib/promotion-ui.test.mjs src/lib/promotions.test.mjs src/lib/registration-errors.test.mjs src/lib/whatsapp-link.test.mjs src/lib/whatsapp-ui.test.mjs",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.5.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.0.0"
+  }
+}

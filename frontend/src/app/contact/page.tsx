@@ -1,0 +1,6 @@
+import { ContactForm } from "@/components/ContactForm";
+import { PageHeading, PublicPageLayout } from "@/components/PublicPageLayout";
+
+export default function ContactPage() {
+  return <PublicPageLayout><PageHeading page="contact" kicker="Contact" title="Écrire à FANAFODIKO" intro="Un formulaire de contact est prévu, mais il n’est pas encore connecté à une adresse ou à un service d’envoi." /><section className="mx-auto grid max-w-5xl gap-8 px-5 py-10 sm:px-8 md:grid-cols-[.8fr_1.2fr] md:py-14"><div><h2 className="text-xl font-bold text-slate-900">Comment nous joindre ?</h2><p className="mt-3 text-sm leading-6 text-slate-600">Aucun canal de contact vérifié n’est configuré dans le site. Le formulaire ci-contre sert uniquement à présenter les champs attendus; il ne transmet rien.</p><h3 className="mt-6 font-semibold text-slate-900">Ce qui manque avant son ouverture</h3><ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600"><li>Un endpoint backend sécurisé et un destinataire confirmé.</li><li>Une validation serveur, une protection CSRF et une limitation des abus.</li><li>Une politique de conservation et d’effacement des demandes.</li></ul></div><ContactForm /></section></PublicPageLayout>;
+}
